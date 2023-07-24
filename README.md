@@ -1,6 +1,6 @@
 # code_tester
  
-Changelog 2 CSS & JS support update modul code_tester:
+Changelog Update 1.1 CSS & JS support:
 CSS Support:
 - Sekarang mendukung semua properti CSS standar seperti font, color, background, margin, padding, dsb.
 - Mendukung pemilihan elemen berdasarkan nama, class, atau id.
@@ -31,7 +31,7 @@ JavaScript Support:
 Catatan: Code Tester adalah alat sederhana dan fokus pada eksekusi kode dari berbagai bahasa pemrograman serta CSS dan JavaScript yang sederhana. Jika Anda memerlukan lingkungan pengujian yang lebih lengkap untuk proyek web yang lebih kompleks, disarankan untuk menggunakan lingkungan pengembangan web seperti XAMPP atau browser dan console developer untuk pengujian yang lebih mendalam.
 
 
-Changelog 1 modul code_tester:
+Changelog Update 1.0 First Build:
 - Code tester bisa mengetes 5 Bahasa total yaitu:(Python,Java,C++,PHP,dan HTML)
 - Code tester mempunyai function*2 yaitu: (run_code,validate_html,run_code_preset,run_code_auto,dan show_html_output_browser)
 - Code tester memiliki contoh penggunaannya dengan tanda kurung
