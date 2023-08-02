@@ -220,6 +220,10 @@ class CodeTester:
 
     def html_set(self, *args):
         code = self.detect_language(args[0])
+        php_code = None
+        html_code = None
+        css_code = None
+        js_code = None
 
         if code == "PHP":
             php_code = args[0]
@@ -232,16 +236,16 @@ class CodeTester:
                         js_code = args[3]
                         return self.build_html_set(php_code,html_code,css_code,js_code)
                     else:
-                        return self.build(php_code,html_code,css_code)
+                        return self.build_html_set(php_code,html_code,css_code,js_code)
                 elif code3 == "JS" or code3 == "JavaScript":
                     js_code = args[2]
                     if len(args) >= 4 and args[3] != "":
                         css_code = args[3]
                         return self.build_html_set(php_code,html_code,css_code,js_code)
                     else:
-                        return self.build_html_set(php_code,html_code,js_code)
+                        return self.build_html_set(php_code,html_code,css_code,js_code)
             else:
-                return self.build_html_set(php_code,html_code)
+                return self.build_html_set(php_code,html_code,css_code,js_code)
         elif code == "HTML":
             html_code = args[0]
             code2 = self.detect_language(args[1])
@@ -249,16 +253,16 @@ class CodeTester:
                 css_code = args[1]
                 if len(args) >= 3 and args[2] != "":
                     js_code = args[2]
-                    return self.build_html_set(html_code,css_code,js_code)
+                    return self.build_html_set(php_code,html_code,css_code,js_code)
                 else:
-                    return self.build_html_set(html_code,css_code)
-            elif code2 == "JS":
+                    return self.build_html_set(php_code,html_code,css_code,js_code)
+            elif code2 == "JavaScript":
                 js_code = args[1]
                 if len(args) >= 3 and args[2] != "":
                     css_code = args[2]
-                    return self.build_html_set(html_code,css_code,js_code)
+                    return self.build_html_set(php_code,html_code,css_code,js_code)
                 else:
-                    return self.build_html_set(html_code,js_code)
+                    return self.build_html_set(php_code,html_code,css_code,js_code)
             else:
                 raise ValueError("Maaf code css atau js tidak ditemukan")
         else:
@@ -480,5 +484,4 @@ php_code = "<?php echo 'Hello, PHP!'; ?>"
 html_code = "<html><head><title>hello</title></head><body><p>Halo orang Gabut!</p></body></html>"
 css_code = "body { background-color: lightblue; }"
 js_code = "alert('Hello, JavaScript!');"
-
-print(code_tester.html_set(php_code, html_code, css_code, js_code))
+code_tester.html_set(html_code, js_code)
