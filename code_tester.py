@@ -485,3 +485,8 @@ code_tester = CodeTester()
 #css_code = "body { background-color: lightblue; }"
 #js_code = "alert('Hello, JavaScript!');"
 #code_tester.html_set(php_code,html_code,css_code,js_code)
+#code_tester.html_set(php_code,html_code,css_code)
+#code_tester.html_set(php_code,html_code,js_code)
+#code_tester.html_set(html_code,css_code,js_code)
+#code_tester.html_set(html_code,css_code)
+#code_tester.html_set(html_code,js_code)
