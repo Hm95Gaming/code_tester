@@ -1,4 +1,14 @@
 # code_tester
+
+Changelog Update 1.2 Frontend Full Pack Patch (Big Update):
+- Membuat fungsi html_set yang menerima argumen untuk kode PHP, HTML, CSS, dan JavaScript. Fungsi ini akan mendeteksi bahasa yang tepat dan memanggil fungsi build_html_set dengan argumen yang sesuai.
+- Pembaruan pada fungsi build_html_set untuk mengatur kode HTML dengan bantuan BeautifulSoup. Tag <style> dan <script> dimasukkan ke dalam bagian kepala dan badan HTML dengan benar.
+- Menggunakan C:/xampp/htdocs secara langsung untuk menghindari masalah KeyError dengan variabel lingkungan XAMPP_HOME.
+- Menyimpan kode HTML yang dihasilkan ke dalam file output.php di folder htdocs, dan membukanya secara otomatis di web browser menggunakan webbrowser.open().
+- Memastikan bahwa kode PHP, CSS, dan JavaScript yang diberikan sesuai dengan standar HTML.
+- Memperbaiki beberapa kesalahan penulisan dan menggunakan self. untuk memanggil metode dalam kelas yang sama.
+
+Dengan pembaruan ini, Anda dapat dengan mudah menggunakan fungsi html_set untuk menghasilkan halaman web dari kode PHP, HTML, CSS, dan JavaScript yang Anda berikan. Pastikan untuk menjalankan XAMPP dan akses output.php melalui localhost agar fungsi ini berfungsi dengan baik.
  
 Changelog Update 1.1 CSS & JS support:
 CSS Support:
