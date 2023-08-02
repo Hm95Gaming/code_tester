@@ -12,6 +12,12 @@ from bs4 import BeautifulSoup
 
 class CodeTester:
     def __init__(self):
+        # var untuk set Html
+        self.php_code = None
+        self.html_code = None
+        self.css_code = None
+        self.js_code = None
+        
         # Kode presets untuk berbagai bahasa pemrograman
         self.code_presets = {
             "Python": "print('Hello, World!')",
@@ -22,6 +28,7 @@ class CodeTester:
             "CSS": "body { background-color: #1ecbe1; color: #333; font-family: Arial, sans-serif; } h1 { color: #04AA6D; }",
             "JavaScript": "alert('Hello, World!');"
         }
+        
 
     def run_code(self, code, language):
         try:
@@ -198,24 +205,245 @@ class CodeTester:
         # Save the HTML code to a temporary file
         with open("output.html", "w") as file:
             file.write(html_code)
+        if os.name == "nt":  # Windows
+            try:
+                url = "file://" + os.path.realpath("output.html")
+                webbrowser.open(url)
+            except FileNotFoundError:
+                print("No browser found. Please open output.html manually.")
+        elif os.name == "posix":  # Linux
+            try:
+                subprocess.run(["xdg-open", "output.html"], check=True)
+            except FileNotFoundError:
+                print("xdg-open command not found. Please open output.html manually.")
 
-        # Check if the HTML code contains any CSS or JavaScript
-        if "<style>" in html_code or "<script>" in html_code:
-            # If it contains CSS or JavaScript, open the browser
-            if os.name == "nt":  # Windows
-                try:
-                    url = "file://" + os.path.realpath("output.html")
-                    webbrowser.open(url)
-                except FileNotFoundError:
-                    print("No browser found. Please open output.html manually.")
-            elif os.name == "posix":  # Linux
-                try:
-                    subprocess.run(["xdg-open", "output.html"], check=True)
-                except FileNotFoundError:
-                    print("xdg-open command not found. Please open output.html manually.")
+
+    def html_set(self, *args):
+        code = self.detect_language(args[0])
+
+        if code == "PHP":
+            php_code = args[0]
+            html_code = args[1]
+            if len(args) >= 3:
+                code3 = self.detect_language(args[2])
+                if code3 == "CSS":
+                    css_code = args[2]
+                    if len(args) >= 4 and args[3] != "":
+                        js_code = args[3]
+                        return self.build_html_set(php_code,html_code,css_code,js_code)
+                    else:
+                        return self.build(php_code,html_code,css_code)
+                elif code3 == "JS" or code3 == "JavaScript":
+                    js_code = args[2]
+                    if len(args) >= 4 and args[3] != "":
+                        css_code = args[3]
+                        return self.build_html_set(php_code,html_code,css_code,js_code)
+                    else:
+                        return self.build_html_set(php_code,html_code,js_code)
+            else:
+                return self.build_html_set(php_code,html_code)
+        elif code == "HTML":
+            html_code = args[0]
+            code2 = self.detect_language(args[1])
+            if code2 == "CSS":
+                css_code = args[1]
+                if len(args) >= 3 and args[2] != "":
+                    js_code = args[2]
+                    return self.build_html_set(html_code,css_code,js_code)
+                else:
+                    return self.build_html_set(html_code,css_code)
+            elif code2 == "JS":
+                js_code = args[1]
+                if len(args) >= 3 and args[2] != "":
+                    css_code = args[2]
+                    return self.build_html_set(html_code,css_code,js_code)
+                else:
+                    return self.build_html_set(html_code,js_code)
+            else:
+                raise ValueError("Maaf code css atau js tidak ditemukan")
         else:
-            print("No CSS or JavaScript code detected. Not opening the browser.")
+            raise ValueError("Maaf code harus sesuai urutan 1.php 2.html 3.css 4.js atau 1.html 2.css 3.js Note: css dan js bisa tebalik")
 
+    def extract_html_head_and_body(self, html_code):
+        try:
+            # Parse the HTML code using BeautifulSoup
+            soup = BeautifulSoup(html_code, "html.parser")
+
+            # Find the head and body elements
+            head_element = soup.find("head")
+            body_element = soup.find("body")
+
+            # Extract the code for head and body
+            head_code = str(head_element) if head_element else ""
+            body_code = str(body_element) if body_element else ""
+
+            return head_code, body_code
+        except Exception as e:
+            return None, None
+
+    def build_html_set(self, php_code, html_code, css_code, js_code):
+        if php_code != None:
+            head_code, body_code = self.extract_html_head_and_body(html_code)
+            if css_code != None:
+                soup = BeautifulSoup(head_code, "html.parser")
+                style_element = soup.new_tag("style")
+                style_element.string = css_code
+                soup.head.append(style_element)
+                head_code = str(soup.head)
+                if js_code != None:
+                    soup = BeautifulSoup(body_code, "html.parser")
+                    script_element = soup.new_tag("script")
+                    script_element.string = js_code
+                    soup.body.append(script_element)
+                    body_code = str(soup.body)
+                    code_set = f"""
+                        {php_code}
+                        <!DOCTYPE html>
+                        <html>
+                            {head_code}
+                            {body_code}
+                        </html>
+                    """
+
+                    htdocs_path = "C:/xampp/htdocs"
+                    output_file_path = os.path.join(htdocs_path, "output.php")
+                    with open(output_file_path, "w") as file:
+                        file.write(code_set)
+                    url = "http://localhost/output.php"
+                    webbrowser.open(url)
+                else:
+                    code_set = f"""
+                        {php_code}
+                        <!DOCTYPE html>
+                        <html>
+                            {head_code}
+                            {body_code}
+                        </html>
+                    """
+
+                    htdocs_path = "C:/xampp/htdocs"
+                    output_file_path = os.path.join(htdocs_path, "output.php")
+                    with open(output_file_path, "w") as file:
+                        file.write(code_set)
+                    url = "http://localhost/output.php"
+                    webbrowser.open(url)
+            elif js_code != None:
+                soup = BeautifulSoup(body_code, "html.parser")
+                script_element = soup.new_tag("script")
+                script_element.string = js_code
+                soup.body.append(script_element)
+                body_code = str(soup.body)
+                code_set = f"""
+                    {php_code}
+                    <!DOCTYPE html>
+                    <html>
+                        {head_code}
+                        {body_code}
+                    </html>
+                """
+
+                htdocs_path = "C:/xampp/htdocs"
+                output_file_path = os.path.join(htdocs_path, "output.php")
+                with open(output_file_path, "w") as file:
+                    file.write(code_set)
+                url = "http://localhost/output.php"
+                webbrowser.open(url)
+            else:
+                code_set = f"""
+                    {php_code}
+                    <!DOCTYPE html>
+                    <html>
+                        {head_code}
+                        {body_code}
+                    </html>
+                """
+
+                htdocs_path = "C:/xampp/htdocs"
+                output_file_path = os.path.join(htdocs_path, "output.php")
+                with open(output_file_path, "w") as file:
+                    file.write(code_set)
+                url = "http://localhost/output.php"
+                webbrowser.open(url)
+
+        else:
+            head_code, body_code = self.extract_html_head_and_body(html_code)
+            if css_code != None:
+                soup = BeautifulSoup(head_code, "html.parser")
+                style_element = soup.new_tag("style")
+                style_element.string = css_code
+                soup.head.append(style_element)
+                head_code = str(soup.head)
+                if js_code != None:
+                    soup = BeautifulSoup(body_code, "html.parser")
+                    script_element = soup.new_tag("script")
+                    script_element.string = js_code
+                    soup.body.append(script_element)
+                    body_code = str(soup.body)
+                    code_set = f"""
+                        <!DOCTYPE html>
+                        <html>
+                            {head_code}
+                            {body_code}
+                        </html>
+                    """
+
+                    htdocs_path = "C:/xampp/htdocs"
+                    output_file_path = os.path.join(htdocs_path, "output.php")
+                    with open(output_file_path, "w") as file:
+                        file.write(code_set)
+                    url = "http://localhost/output.php"
+                    webbrowser.open(url)
+                else:
+                    code_set = f"""
+                        <!DOCTYPE html>
+                        <html>
+                            {head_code}
+                            {body_code}
+                        </html>
+                    """
+
+                    htdocs_path = "C:/xampp/htdocs"
+                    output_file_path = os.path.join(htdocs_path, "output.php")
+                    with open(output_file_path, "w") as file:
+                        file.write(code_set)
+                    url = "http://localhost/output.php"
+                    webbrowser.open(url)
+            elif js_code != None:
+                soup = BeautifulSoup(body_code, "html.parser")
+                script_element = soup.new_tag("script")
+                script_element.string = js_code
+                soup.body.append(script_element)
+                body_code = str(soup.body)
+                code_set = f"""
+                    <!DOCTYPE html>
+                    <html>
+                        {head_code}
+                        {body_code}
+                    </html>
+                """
+
+                htdocs_path = "C:/xampp/htdocs"
+                output_file_path = os.path.join(htdocs_path, "output.php")
+                with open(output_file_path, "w") as file:
+                    file.write(code_set)
+                url = "http://localhost/output.php"
+                webbrowser.open(url)
+            else:
+                code_set = f"""
+                    <!DOCTYPE html>
+                    <html>
+                        {head_code}
+                        {body_code}
+                    </html>
+                """
+
+                htdocs_path = "C:/xampp/htdocs"
+                output_file_path = os.path.join(htdocs_path, "output.php")
+                with open(output_file_path, "w") as file:
+                    file.write(code_set)
+                url = "http://localhost/output.php"
+                webbrowser.open(url)
+        
 
 code_tester = CodeTester()
 # Contoh menjalankan kode preset dan mencetak output ke konsol
@@ -246,3 +474,11 @@ code_tester = CodeTester()
 #Contoh penggunaan JS di code tester
 #print(code_tester.run_code_auto("alert('Hello, World!');"))
 #print(code_tester.run_code_auto('const message = "Hello, World!"; console.log(message); function addNumbers(a, b) { return a + b; } const result = addNumbers(5, 10); console.log(result); alert("This is an alert!");'))
+
+# Contoh penggunaan set HTML
+php_code = "<?php echo 'Hello, PHP!'; ?>"
+html_code = "<html><head><title>hello</title></head><body><p>Halo orang Gabut!</p></body></html>"
+css_code = "body { background-color: lightblue; }"
+js_code = "alert('Hello, JavaScript!');"
+
+print(code_tester.html_set(php_code, html_code, css_code, js_code))
