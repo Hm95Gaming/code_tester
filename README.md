@@ -1,12 +1,18 @@
 # code_tester
 
 Changelog Update 1.2 Frontend Full Pack Patch (Big Update):
-- Menambahkan fungsi html_set yang menerima argumen untuk kode PHP, HTML, CSS, dan JavaScript. Fungsi ini akan mendeteksi bahasa yang tepat dan memanggil fungsi build_html_set yang baru dimasukan dengan argumen yang sesuai.
-- Penambahan dan pembaruan pada fungsi build_html_set untuk mengatur kode HTML dengan bantuan BeautifulSoup. Tag <style> dan <script> dimasukkan ke dalam bagian kepala dan badan HTML dengan benar.
-- Menggunakan C:/xampp/htdocs secara langsung untuk menghindari masalah KeyError dengan variabel lingkungan XAMPP_HOME.
-- Menyimpan kode HTML yang dihasilkan ke dalam file output.php di folder htdocs, dan membukanya secara otomatis di web browser menggunakan webbrowser.open().
-- Memastikan bahwa kode PHP, CSS, dan JavaScript yang diberikan sesuai dengan standar HTML.
-- Memperbaiki beberapa kesalahan penulisan dan menggunakan self. untuk memanggil metode dalam kelas yang sama.
+- Ditambahkan atribut untuk menyimpan kode PHP, HTML, CSS, dan JavaScript yang akan digunakan saat memanggil metode html_set.
+- Ditambahkan metode html_set(self, *args) untuk mengatur kode PHP, HTML, CSS, dan JavaScript, serta memanggil metode build_html_set untuk menghasilkan file HTML dan membukanya di browser.
+- Ditambahkan metode extract_html_head_and_body(self, html_code) untuk mengekstrak kode bagian head dan body dari kode HTML yang diberikan.
+- Ditambahkan metode build_html_set(self, php_code, html_code, css_code, js_code) untuk membangun file HTML dari kode PHP, HTML, CSS, dan JavaScript yang diberikan.
+- Dalam metode html_set, kode telah diperbaiki untuk memeriksa dan menangani kondisi jika kode PHP, HTML, CSS, atau JavaScript tidak diberikan atau tidak valid.
+- Penanganan untuk mengatasi kasus ketika kode CSS atau JavaScript tidak diberikan telah diperbaiki dengan menambahkan kondisi yang tepat.
+- Dalam metode html_set, kesalahan tipe telah diperbaiki untuk mengecek kode bahasa pemrograman yang sesuai.
+- Ditambahkan pengecekan untuk kode bahasa pemrograman "Javascript" sebagai alternatif untuk "JS" saat memeriksa kode CSS atau JavaScript.
+- Kesalahan penamaan fungsi telah diperbaiki dengan mengganti "Javascript" menjadi "JavaScript".
+- Ditambahkan penanganan kesalahan untuk mengangani situasi ketika kode bahasa pemrograman tidak sesuai urutan yang diharapkan.
+- Dalam metode html_set, kode telah diperbaiki untuk mengembalikan hasil dari metode build_html_set.
+- Penanganan kesalahan telah diperbaiki untuk mengatasi situasi ketika fungsi extract_html_head_and_body mengembalikan None.
 
 Note: Dengan pembaruan ini, Anda dapat dengan mudah menggunakan fungsi html_set untuk menghasilkan halaman web dari kode PHP, HTML, CSS, dan JavaScript yang Anda berikan. Pastikan untuk menjalankan XAMPP dan akses output.php melalui localhost agar fungsi ini berfungsi dengan baik.
  
