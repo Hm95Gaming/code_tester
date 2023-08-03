@@ -8,7 +8,7 @@ Changelog Update 1.2 Frontend Full Pack Patch (Big Update):
 - Memastikan bahwa kode PHP, CSS, dan JavaScript yang diberikan sesuai dengan standar HTML.
 - Memperbaiki beberapa kesalahan penulisan dan menggunakan self. untuk memanggil metode dalam kelas yang sama.
 
-Dengan pembaruan ini, Anda dapat dengan mudah menggunakan fungsi html_set untuk menghasilkan halaman web dari kode PHP, HTML, CSS, dan JavaScript yang Anda berikan. Pastikan untuk menjalankan XAMPP dan akses output.php melalui localhost agar fungsi ini berfungsi dengan baik.
+Note: Dengan pembaruan ini, Anda dapat dengan mudah menggunakan fungsi html_set untuk menghasilkan halaman web dari kode PHP, HTML, CSS, dan JavaScript yang Anda berikan. Pastikan untuk menjalankan XAMPP dan akses output.php melalui localhost agar fungsi ini berfungsi dengan baik.
  
 Changelog Update 1.1 CSS & JS support:
 CSS Support:
