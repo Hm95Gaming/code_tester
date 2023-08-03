@@ -11,6 +11,7 @@ Changelog Update 1.2 Frontend Full Pack Patch (Big Update):
 Note: Dengan pembaruan ini, Anda dapat dengan mudah menggunakan fungsi html_set untuk menghasilkan halaman web dari kode PHP, HTML, CSS, dan JavaScript yang Anda berikan. Pastikan untuk menjalankan XAMPP dan akses output.php melalui localhost agar fungsi ini berfungsi dengan baik.
  
 Changelog Update 1.1 CSS & JS support:
+
 CSS Support:
 - Sekarang mendukung semua properti CSS standar seperti font, color, background, margin, padding, dsb.
 - Mendukung pemilihan elemen berdasarkan nama, class, atau id.
