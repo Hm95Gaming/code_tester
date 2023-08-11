@@ -17,6 +17,20 @@ class CodeTester:
         self.html_code = None
         self.css_code = None
         self.js_code = None
+
+
+        #Dictionary eksekusi kode
+        self.language_executors = {
+            "Python": self.execute_python,
+            "Java": self.execute_java,
+            "C++": self.execute_cpp,
+            "PHP": self.execute_php,
+            "HTML": self.execute_html,
+            "CSS": self.execute_css,
+            "JS": self.execute_javascript,
+            "JavaScript": self.execute_javascript,
+        }
+
         
         # Kode presets untuk berbagai bahasa pemrograman
         self.code_presets = {
@@ -27,78 +41,125 @@ class CodeTester:
             "HTML": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Hello, World!</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n</body>\n</html>",
             "CSS": "body { background-color: #1ecbe1; color: #333; font-family: Arial, sans-serif; } h1 { color: #04AA6D; }",
             "JavaScript": "alert('Hello, World!');"
-        }
-        
+        }        
+
 
     def run_code(self, code, language):
+        executor = self.language_executors.get(language)
+        if executor:
+            return executor(code)
+        else:
+            raise ValueError("Language not supported.")
+    
+    def execute_python(self, code):
         try:
-            if language == "Python":
-                output = StringIO()
-                with redirect_stdout(output):
-                    exec(code, globals(), globals())
-                return output.getvalue().strip()
-            elif language == "Java":
-                with open("MyProgram.java", "w") as file:
-                    file.write(code)
-                process = subprocess.Popen(["javac", "MyProgram.java"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, stderr = process.communicate()
-                if stderr:
-                    return "\n\nCompilation Error:\n" + stderr
-                else:
-                    process = subprocess.Popen(["java", "MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    stdout, stderr = process.communicate()
-                    output = stdout
-                    if stderr:
-                        output += "\n\nRuntime Error:\n" + stderr
-                    os.remove("MyProgram.java")  # Menghapus file Java setelah selesai
-                    os.remove("MyProgram.class")  # Menghapus file bytecode Java setelah selesai
-                    return output
-            elif language == "C++":
-                with open("MyProgram.cpp", "w") as file:
-                    file.write(code)
-                process = subprocess.Popen(["g++", "MyProgram.cpp", "-o", "MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, stderr = process.communicate()
-                if stderr:
-                    return "\n\nCompilation Error:\n" + stderr
-                else:
-                    process = subprocess.Popen(["./MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    stdout, stderr = process.communicate()
-                    output = stdout
-                    if stderr:
-                        output += "\n\nRuntime Error:\n" + stderr
-                    os.remove("MyProgram.cpp")  # Menghapus file C++ setelah selesai
-                    return output
-            elif language == "PHP":
-                with open("code.php", "w") as file:
-                    file.write(code)
-                process = subprocess.Popen(["php", "code.php"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                stdout, stderr = process.communicate()
-                output = stdout
-                if stderr:
-                    output += "\n\nError:\n" + stderr
-                os.remove("code.php")  # Menghapus file PHP setelah selesai
-                return output
-            elif language == "HTML":
-                result = self.validate_html(code)
-                if "valid" in result.lower():
-                    self.show_html_output_in_browser(code)
-                return result
-            elif language == "CSS":
-                return self.execute_css(code)
-            elif language in ["JS","JavaScript"]:
-                return self.execute_javascript(code)
-            else:
-                raise ValueError("Language not supported.")
+            output = StringIO()
+            with redirect_stdout(output):
+                exec(code, globals(), globals())
+            return output.getvalue().strip()
         except Exception as e:
             return str(e)
 
+    def execute_java(self, code):
+        try:
+            with open("MyProgram.java", "w") as file:
+                file.write(code)
+            process = subprocess.Popen(["javac", "MyProgram.java"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate()
+            if stderr:
+                return "\n\nCompilation Error:\n" + stderr
+            else:
+                process = subprocess.Popen(["java", "MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                stdout, stderr = process.communicate()
+                output = stdout
+                if stderr:
+                    output += "\n\nRuntime Error:\n" + stderr
+                os.remove("MyProgram.java")  # Menghapus file Java setelah selesai
+                os.remove("MyProgram.class")  # Menghapus file bytecode Java setelah selesai
+                return output
+        except Exception as e:
+            return str(e)
+
+    def execute_cpp(self, code):
+        try:
+            with open("MyProgram.cpp", "w") as file:
+                file.write(code)
+            process = subprocess.Popen(["g++", "MyProgram.cpp", "-o", "MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate()
+            if stderr:
+                return "\n\nCompilation Error:\n" + stderr
+            else:
+                process = subprocess.Popen(["./MyProgram"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                stdout, stderr = process.communicate()
+                output = stdout
+                if stderr:
+                    output += "\n\nRuntime Error:\n" + stderr
+                os.remove("MyProgram.cpp")  # Menghapus file C++ setelah selesai
+                return output
+        except Exception as e:
+            return str(e)
+
+    def execute_php(self, code):
+        try:
+            with open("code.php", "w") as file:
+                file.write(code)
+            process = subprocess.Popen(["php", "code.php"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate()
+            output = stdout
+            if stderr:
+                output += "\n\nError:\n" + stderr
+            os.remove("code.php")  # Menghapus file PHP setelah selesai
+            return output
+        except Exception as e:
+            return str(e)
+
+    def execute_html(self, code):
+        try:
+            result = self.validate_html(code)
+            if "valid" in result.lower():
+                self.show_html_output_in_browser(code)
+            return result
+        except Exception as e:
+            return str(e)
+
+    def execute_css(self, code):
+        try:
+            self.create_html_page_with_css(code)
+            return "CSS code executed successfully:\n" + code
+        except Exception as e:
+            return "Failed to execute CSS code: " + str(e)
+
+    def execute_javascript(self, code):
+        try:
+            # Eksekusi kode JavaScript
+            self.create_html_page_with_javascript(code)
+            return "JavaScript code executed successfully:\n" + code
+        except Exception as e:
+            return "Failed to execute JavaScript code: " + str(e)
+
     def validate_html(self, code):
         try:
-            # We can use a library like BeautifulSoup to parse and validate HTML
-            soup = BeautifulSoup(code, "html.parser")
-            return "HTML code is valid."
+            # Coba menggunakan html5validator
+            try:
+                validator = HTML5Validator()
+                result = validator.validate_fragment(code)
+                if result.is_valid:
+                    return "HTML code is valid."
+                else:
+                    return "Invalid HTML code."
+            except ImportError:
+                pass  # Jika html5validator tidak tersedia, lanjutkan ke SoupStrainer
+
+            # Fallback ke SoupStrainer dari BeautifulSoup
+            only_head_and_body = SoupStrainer("head", "body")
+            soup = BeautifulSoup(code, "html.parser", parse_only=only_head_and_body)
+            # Lakukan validasi tambahan jika diperlukan
+            if soup.find("head") and soup.find("body"):
+                return "HTML code is valid."
+            else:
+                return "Invalid HTML code."
         except Exception as e:
-            return "Invalid HTML code: " + str(e)
+            return "Validation Error: " + str(e)
 
     def execute_css(self, code):
         try:
@@ -176,7 +237,6 @@ class CodeTester:
 
     def detect_language(self, code):
         # Perform language detection here.
-        # This is a simple example that checks for keywords unique to each language.
         if "def " in code or "print(" in code:
             return "Python"
         elif "public class" in code or "System.out.println" in code:
@@ -459,9 +519,8 @@ code_tester = CodeTester()
 # Contoh penggunaan HTML di code tester
 #code_tester.run_code("your_html_code_here", "HTML")
 #code_tester.run_code_preset("HTML")
-#code_tester.run_code_auto("<!DOCTYPE html><html><head><title>Contoh Halaman HTML</title><link rel='stylesheet' href='style.css'><script src='script.js'></script></head><body><header><h1>Selamat Datang di Contoh Halaman HTML</h1><nav><ul><li><a href='#home'>Beranda</a></li><li><a href='#about'>Tentang Kami</a></li><li><a href='#contact'>Kontak</a></li></ul></nav></header><main><section id='home'><h2>Selamat datang di Beranda</h2><p>Ini adalah halaman beranda contoh.</p></section><section id='about'><h2>Tentang Kami</h2><p>Kami adalah sebuah perusahaan fiksi yang mengembangkan solusi web inovatif.</p></section><section id='contact'><h2>Kontak</h2><p>Jika Anda memiliki pertanyaan, silakan hubungi kami di email@example.com.</p></section></main><footer><p>Hak Cipta &copy; 2023 Nama Perusahaan. Seluruh hak cipta dilindungi.</p></footer></body></html>")
+#code_tester.run_code_auto("<!DOCTYPE html><html<head><title>Contoh Halaman HTML</title><link rel='stylesheet' href='style.css'><script src='script.js'></script></head><body><header><h1>Selamat Datang di Contoh Halaman HTML</h1><nav><ul><li><a href='#home'>Beranda</a></li><li><a href='#about'>Tentang Kami</a></li><li><a href='#contact'>Kontak</a></li></ul></nav></header><main><section id='home'><h2>Selamat datang di Beranda</h2><p>Ini adalah halaman beranda contoh.</p></section><section id='about'><h2>Tentang Kami</h2><p>Kami adalah sebuah perusahaan fiksi yang mengembangkan solusi web inovatif.</p></section><section id='contact'><h2>Kontak</h2><p>Jika Anda memiliki pertanyaan, silakan hubungi kami di email@example.com.</p></section></main><footer><p>Hak Cipta &copy; 2023 Nama Perusahaan. Seluruh hak cipta dilindungi.</p></footer></body></html>")
 #code_tester.run_code_auto('<!DOCTYPE html><html><head><title>Contoh Halaman Web dengan Sidebar Navigasi</title><style>.sidebar{margin:0;padding:0;width:200px;background-color:#f1f1f1;position:fixed;height:100%;overflow:auto;}.sidebar a{display:block;color:black;padding:16px;text-decoration:none;}.sidebar a.active{background-color:#04AA6D;color:white;}.sidebar a:hover:not(.active){background-color:#555;color:white;}.content{margin-left:200px;padding:1px 16px;height:1000px;}.sidebar{width:100%;height:auto;position:relative;}.sidebar a{float:left;}.content{margin-left:0;}}@media screen and (max-width:700px){.sidebar{width:100%;height:auto;position:relative;}.sidebar a{float:left;}.content{margin-left:0;}}@media screen and (max-width:400px){.sidebar a{text-align:center;float:none;}}</style></head><body><div class="sidebar"><a href="#" class="active">Beranda</a><a href="#">Tentang</a><a href="#">Kontak</a><a href="#">Layanan</a></div><div class="content"><h1>Selamat Datang di Halaman Web</h1><p>Ini adalah contoh halaman web sederhana dengan sidebar navigasi.</p><p>Anda dapat menambahkan lebih banyak konten di sini.</p></div></body></html>')
-
 
 # Contoh menjalankan run_code_auto dan mencetak output ke konsol
 #print(code_tester.run_code_auto("print('Hello, Auto Run!')"))
