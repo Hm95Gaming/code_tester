@@ -29,6 +29,7 @@ class CodeTester:
             "CSS": self.execute_css,
             "JS": self.execute_javascript,
             "JavaScript": self.execute_javascript,
+            "Ruby": self.execute_ruby,
         }
 
         
@@ -40,7 +41,8 @@ class CodeTester:
             "PHP": "<?php\n    echo 'Hello, World!';\n?>",
             "HTML": "<!DOCTYPE html>\n<html>\n<head>\n    <title>Hello, World!</title>\n</head>\n<body>\n    <h1>Hello, World!</h1>\n</body>\n</html>",
             "CSS": "body { background-color: #1ecbe1; color: #333; font-family: Arial, sans-serif; } h1 { color: #04AA6D; }",
-            "JavaScript": "alert('Hello, World!');"
+            "JavaScript": "alert('Hello, World!');",
+            "Ruby": "puts 'Hello, Ruby!'"
         }        
 
 
@@ -137,6 +139,20 @@ class CodeTester:
         except Exception as e:
             return "Failed to execute JavaScript code: " + str(e)
 
+    def execute_ruby(self, code):
+        try:
+            with open("code.rb", "w") as file:
+                file.write(code)
+            process = subprocess.Popen(["ruby", "code.rb"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            stdout, stderr = process.communicate()
+            output = stdout
+            if stderr:
+                output += "\n\nError:\n" + stderr
+            os.remove("code.rb")  # Remove the Ruby script file after execution
+            return output
+        except Exception as e:
+            return str(e)
+
     def validate_html(self, code):
         try:
             # Coba menggunakan html5validator
@@ -178,18 +194,18 @@ class CodeTester:
 
     def create_html_page_with_css(self, css_code):
         html_code = f"""<!DOCTYPE html>
-<html>
-<head>
-    <title>CSS Code Test</title>
-    <style>
-        {css_code}
-    </style>
-</head>
-<body>
-    <h1>This is a heading</h1>
-    <p>This is a paragraph.</p>
-</body>
-</html>"""
+        <html>
+        <head>
+            <title>CSS Code Test</title>
+            <style>
+                {css_code}
+            </style>
+        </head>
+        <body>
+            <h1>This is a heading</h1>
+            <p>This is a paragraph.</p>
+        </body>
+        </html>"""
 
         with open("output.html", "w") as file:
             file.write(html_code)
@@ -251,6 +267,8 @@ class CodeTester:
             return "CSS"
         elif "console.log(" in code or "function " in code or "var " in code or "const " in code or "alert(" in code:
             return "JavaScript"
+        elif "def " in code or "puts " in code:
+            return "Ruby"
         else:
             raise ValueError("Language detection failed. Please specify the language explicitly.")
 
@@ -271,7 +289,7 @@ class CodeTester:
                 webbrowser.open(url)
             except FileNotFoundError:
                 print("No browser found. Please open output.html manually.")
-        elif os.name == "posix":  # Linux
+        elif os.name == "posix":  # Linux and MacOS
             try:
                 subprocess.run(["xdg-open", "output.html"], check=True)
             except FileNotFoundError:
@@ -280,10 +298,7 @@ class CodeTester:
 
     def html_set(self, *args):
         code = self.detect_language(args[0])
-        php_code = None
-        html_code = None
-        css_code = None
-        js_code = None
+        php_code, html_code, css_code, js_code = None, None, None, None
 
         if code == "PHP":
             php_code = args[0]
@@ -515,6 +530,7 @@ code_tester = CodeTester()
 #print(code_tester.run_code_preset("Java"))
 #print(code_tester.run_code_preset("C++"))
 #print(code_tester.run_code_preset("PHP"))
+#print(code_tester.run_code_preset("Ruby"))
 
 # Contoh penggunaan HTML di code tester
 #code_tester.run_code("your_html_code_here", "HTML")
@@ -549,3 +565,7 @@ code_tester = CodeTester()
 #code_tester.html_set(html_code,css_code,js_code)
 #code_tester.html_set(html_code,css_code)
 #code_tester.html_set(html_code,js_code)
+
+
+# Contoh penggunaan Ruby (Note: untuk penggunaan ruby diharuskan untuk menggunakan tanda petik 1)
+#print(code_tester.run_code_auto('n = 40; require "prime"; puts n.prime_division.map{|f,p| "#{f}^#{p}"}.join(" * ")'))
