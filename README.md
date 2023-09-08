@@ -3,6 +3,9 @@
 Changelog Update 1.3 Ruby Update:
 - Menambahkan function execute_ruby untuk testing code ruby
 - Mendukung code ruby dari tingkatan rendah sampe medium (Untuk yang lebih kompleks masih belum di tes)
+- Mengupdate Detect_language untuk bisa mendeteksi kode ruby
+- Mengupdate language_executors untuk memanggil function execute_ruby
+- Mengupdate code_presets untuk memberi contoh kodingan maupun mengetes kode ruby
 
 Changelog Update 1.2 Frontend Full Pack Patch (Big Update):
 - Ditambahkan atribut untuk menyimpan kode PHP, HTML, CSS, dan JavaScript yang akan digunakan saat memanggil metode html_set.
